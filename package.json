@@ -6,15 +6,20 @@
   "license": "MIT",
   "scripts": {
     "watch": "webpack --watch --progress --config webpack.dev.js",
-    "build": "webpack --watch --progress --config webpack.prod.js"
+    "build": "webpack --watch --progress --config webpack.prod.js",
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@types/chrome": "^0.0.188",
+    "@types/estree": "^1.0.5",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
+    "eslint": "^8.56.0",
     "html-webpack-plugin": "^5.5.0",
     "postcss-loader": "^7.0.0",
     "react": "^18.1.0",

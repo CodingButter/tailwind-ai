@@ -4,6 +4,6 @@ chrome.runtime.sendMessage('I am loading content script', (response) => {
 
 })
 
-window.onload = (event) => {
+window.onload = (event: Event = null) => {
     console.log('page is fully loaded');
 };
