@@ -5,13 +5,10 @@
   "version": "1.0.0",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "React Boilerplate",
+    "default_title": "Tailwind AI",
     "default_icon": "icon.png"
   },
-  "chrome_url_overrides": {
-    "newtab": "newTab.html"
-  },
-  "permissions": ["tabs", "bookmarks", "storage", "identity"],
+  "permissions": ["bookmarks", "storage", "identity"],
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
@@ -24,7 +21,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"]
+      "js": ["contentScript.js", "745.js"]
     }
   ]
 }
