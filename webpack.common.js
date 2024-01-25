@@ -1,16 +1,16 @@
-const path = require("path")
-const CopyPlugin = require("copy-webpack-plugin")
-const HtmlPlugin = require("html-webpack-plugin")
-const { CleanWebpackPlugin } = require("clean-webpack-plugin")
-const tailwindcss = require("tailwindcss")
-const autoprefixer = require("autoprefixer")
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+const HtmlPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const tailwindcss = require("tailwindcss");
+const autoprefixer = require("autoprefixer");
 
 module.exports = {
   entry: {
     popup: path.resolve("src/popup/index.tsx"),
     options: path.resolve("src/options/index.tsx"),
-    contentScript: path.resolve("src/contentScript/contentScript.tsx"),
     background: path.resolve("src/background/background.ts"),
+    content: path.resolve("src/content/content.ts"),
   },
   module: {
     rules: [
@@ -72,7 +72,7 @@ module.exports = {
       chunks: "all",
     },
   },
-}
+};
 
 function getHtmlPlugins(chunks) {
   return chunks.map(
@@ -82,5 +82,5 @@ function getHtmlPlugins(chunks) {
         filename: `${chunk}.html`,
         chunks: [chunk],
       })
-  )
+  );
 }

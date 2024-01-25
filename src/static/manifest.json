@@ -8,20 +8,21 @@
     "default_title": "Tailwind AI",
     "default_icon": "icon.png"
   },
-  "permissions": ["bookmarks", "storage", "identity"],
+  "permissions": ["tabs", "bookmarks", "storage", "identity", "scripting"],
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
     "128": "icon.png"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://play.tailwindcss.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": ["https://play.tailwindcss.com/*"],
   "options_page": "options.html",
   "background": {
     "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js", "745.js"]
-    }
-  ]
+  }
 }
