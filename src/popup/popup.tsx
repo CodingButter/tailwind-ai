@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./popup.css";
 import Accordion from "./components/Accordion";
 import FileInput from "./components/FileInput";
 import ChatArea from "./components/ChatArea";
