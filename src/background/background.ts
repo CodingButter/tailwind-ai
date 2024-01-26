@@ -1,8 +1,9 @@
-const ports = new Map<string, { port: chrome.runtime.Port, listeners: string[] }>();
+const ports: Map<string, chrome.runtime.Port> = new Map();
 chrome.runtime.onConnect.addListener((port) => {
-    ports.set(port.name, { port, listeners: [] });
+    ports.set(port.name, port);
     port.onMessage.addListener((message) => {
-        ports.get(message.target)?.port.postMessage(message)
+        if (!ports.get(message.target))
+            ports.get(message.target)?.postMessage(message)
     });
     port.onDisconnect.addListener(() => {
         ports.delete(port.name);

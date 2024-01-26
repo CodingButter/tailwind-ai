@@ -1,4 +1,26 @@
-body {
-    height: 400px;
-    width: 400px;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  body,
+  html,
+  #app-container {
+    @apply bg-transparent;
+  }
+  /* Custom styles for accordion */
+  .accordion-checkbox {
+    display: none; /* Hide the checkbox */
+  }
+
+  .accordion-checkbox:checked + .accordion-label + .accordion-content {
+    max-height: 200px; /* Max height when expanded */
+    padding: 0.5rem; /* Padding when expanded */
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
 }
