@@ -19,7 +19,7 @@ interface FileIconProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const FileIcon: React.FC<FileIconProps> = ({ file }) => {
-  const iconSize = "2xl";
+  const iconSize = "sm";
   // Function to determine if file is an image
   const isImage = (file: File): boolean => file.type.startsWith("image/");
 
@@ -70,19 +70,19 @@ const FileIcon: React.FC<FileIconProps> = ({ file }) => {
   };
 
   return (
-    <div className="rounded overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 text-gray-700">
+    <a className="flex justify-center items-center aspect-square rounded overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 text-gray-700">
       {isImage(file) ? (
         <img
           src={URL.createObjectURL(file)}
           alt="thumbnail"
-          className="w-full h-20 object-cover"
+          className="w-full h-full object-cover"
         />
       ) : (
-        <div className="flex items-center justify-center bg-gray-300 h-20 w-full text-3xl">
+        <div className="flex items-center justify-center bg-gray-300 h-full w-full text-3xl">
           {getFileIcon(file.type)}
         </div>
       )}
-    </div>
+    </a>
   );
 };
 

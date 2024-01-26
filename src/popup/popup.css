@@ -3,17 +3,12 @@
 @tailwind utilities;
 
 @layer components {
-  body,
-  html,
-  #app-container {
-    @apply bg-transparent;
-  }
   /* Custom styles for accordion */
   .accordion-checkbox {
     display: none; /* Hide the checkbox */
   }
 
-  .accordion-checkbox:checked + .accordion-label + .accordion-content {
+  .accordion-checkbox:checked + .accordion-content {
     max-height: 200px; /* Max height when expanded */
     padding: 0.5rem; /* Padding when expanded */
   }
@@ -22,5 +17,47 @@
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
+  }
+  /* Add this in your main CSS file */
+
+  /* Scrollbar track */
+  .scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  /* Scrollbar thumb */
+  .scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+
+  /* Scrollbar corner */
+  .scrollbar-corner {
+    @apply bg-transparent opacity-50 rounded-full;
+  }
+
+  /* Firefox compatibility */
+  .scrollbar-width {
+    scrollbar-width: thin;
+    scrollbar-color: bg-transparent;
+  }
+
+  /* Apply the styles to the elements where you want the custom scrollbar */
+  .element-with-custom-scrollbar {
+    @apply scrollbar-track scrollbar-thumb scrollbar-corner scrollbar-width;
+  }
+
+  /* Custom styles for Webkit browsers */
+  .element-with-custom-scrollbar::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .element-with-custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent rounded-full;
+  }
+
+  .element-with-custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #b3b3b3;
+    border-radius: 9999px;
+    border: 3px solid #2d2d2d;
   }
 }
