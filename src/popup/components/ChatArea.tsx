@@ -6,7 +6,7 @@ import { faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import TextAreaAutosize from "react-textarea-autosize";
 
 function ChatArea() {
-  const { inputRef, files } = useFileManager();
+  const { inputRef } = useFileManager();
   return (
     <div className="w-full rounded-md h-full flex flex-col justify-end gap-2 px-4">
       <div

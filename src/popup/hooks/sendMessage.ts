@@ -1,26 +1,27 @@
-import type { ACTIONS } from "../../types";
+import { ACTIONS } from "../../types";
 import { v4 as uuidv4 } from 'uuid';
 const port = chrome.runtime.connect({ name: "popup" });
 
 interface sendMessageProps {
   action: ACTIONS,
-  data?: string
+  data?: any
 }
 
 interface sendMessageResponse {
   action: ACTIONS,
-  data?: string
+  data?: any
   uuid: string
 }
 
 interface sendMessageCallbackProps {
-  data?: string,
+  data?: any,
   error?: string
 }
 type sendMessageCallback = (props: sendMessageCallbackProps) => void
 
-const listeners = new Map<string, (response: { action: ACTIONS, data?: string, error?: string, uuid: string }) => void>();
+const listeners = new Map<string, (response: { action: ACTIONS, data?: any, error?: string, uuid: string }) => void>();
 port.onMessage.addListener((message) => {
+  console.log({ from: 'popup', message })
   const { uuid } = message;
   listeners.get(uuid)?.(message)
 });
@@ -34,14 +35,19 @@ const createListener = (uuid: string, callback: sendMessageCallback) => {
 
 const sendMessage = async ({ action, data }: sendMessageProps, callback?: sendMessageCallback): Promise<sendMessageCallbackProps> => {
   const uuid: string = uuidv4();
-  port.postMessage({ target: "content", type: action, data, uuid });
-  if (callback) createListener(uuid, callback);
-  return new Promise((resolve) => {
-    port.postMessage({ target: "content", type: action, data, uuid });
-    createListener(uuid, ({ data, error }) => {
-      resolve({ data, error });
+
+  if (callback) {
+    createListener(uuid, callback);
+    port.postMessage({ target: "content", action, data, uuid })
+  }
+  else {
+    return new Promise((resolve) => {
+      createListener(uuid, ({ data, error }) => {
+        resolve({ data, error });
+      });
+      port.postMessage({ target: "content", action, data, uuid });
     });
-  });
+  }
 }
 
 export default sendMessage;

@@ -1,0 +1,7 @@
+#otherOptionsToggle:checked + #otherOptionsContent {
+  display: grid;
+}
+
+#otherOptionsContent {
+  display: none;
+}

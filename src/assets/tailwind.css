@@ -13,11 +13,11 @@
     font-feature-settings: normal;
     font-variation-settings: normal;
     -webkit-tap-highlight-color: transparent;
-    @apply bg-gray-800;
+    @apply bg-gray-800 text-accent;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(148 163 184 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
   }
   .surface {
-    @apply rounded-md border border-white border-opacity-10 bg-gray-600;
+    @apply rounded-md border border-white border-opacity-10 bg-transparent;
   }
   button span {
     @apply transition-all duration-300;
@@ -37,5 +37,79 @@
   button:hover .button-icon,
   label:hover .button-icon {
     @apply hidden;
+  }
+  /* Scrollbar track */
+  .scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  /* Scrollbar thumb */
+  .scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+
+  /* Scrollbar corner */
+  .scrollbar-corner {
+    @apply bg-transparent opacity-50 rounded-full;
+  }
+
+  /* Firefox compatibility */
+  .scrollbar-width {
+    scrollbar-width: thin;
+    scrollbar-color: bg-transparent;
+  }
+
+  /* Apply the styles to the elements where you want the custom scrollbar */
+  .element-with-custom-scrollbar {
+    @apply scrollbar-track scrollbar-thumb scrollbar-corner scrollbar-width;
+  }
+
+  /* Custom styles for Webkit browsers */
+  .element-with-custom-scrollbar::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .element-with-custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent rounded-full;
+  }
+
+  .element-with-custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #b3b3b3;
+    border-radius: 9999px;
+    border: 3px solid #2d2d2d;
+  }
+  /* Focus within utility for parent hover */
+  .group:focus-within .group-hover\:block {
+    display: block;
+  }
+
+  /* Custom styles for buttons */
+  .form-input {
+    transition: padding-left 0.2s ease-in-out;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .animate-expand {
+    animation: expand 2s;
+    transition-timing-function: linear;
+    @apply w-fit h-full;
+  }
+
+  @keyframes expand {
+    0% {
+      @apply max-w-[10%] max-h-0;
+    }
+    50% {
+      @apply max-w-[10%] max-h-full;
+    }
+    100% {
+      @apply max-w-full max-h-full;
+    }
   }
 }

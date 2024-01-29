@@ -18,10 +18,11 @@ interface FileIconProps extends React.HTMLAttributes<HTMLDivElement> {
   file: File;
 }
 
-const FileIcon: React.FC<FileIconProps> = ({ file }) => {
+const FileIcon: React.FC<FileIconProps> = (props: FileIconProps) => {
+  const file = props?.file;
   const iconSize = "sm";
   // Function to determine if file is an image
-  const isImage = (file: File): boolean => file.type.startsWith("image/");
+  const isImage = (file: File): boolean => file?.type?.startsWith("image/");
 
   // Function to get FontAwesome icon for file type
   const getFileIcon = (fileType: string): JSX.Element => {
@@ -71,7 +72,7 @@ const FileIcon: React.FC<FileIconProps> = ({ file }) => {
 
   return (
     <a className="flex justify-center items-center aspect-square rounded overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 text-gray-700">
-      {isImage(file) ? (
+      {file && isImage(file) ? (
         <img
           src={URL.createObjectURL(file)}
           alt="thumbnail"
@@ -79,7 +80,7 @@ const FileIcon: React.FC<FileIconProps> = ({ file }) => {
         />
       ) : (
         <div className="flex items-center justify-center bg-gray-300 h-full w-full text-3xl">
-          {getFileIcon(file.type)}
+          {getFileIcon(file?.type)}
         </div>
       )}
     </a>

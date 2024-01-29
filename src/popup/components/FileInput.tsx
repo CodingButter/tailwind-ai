@@ -1,12 +1,15 @@
 import React, { useState, ChangeEvent } from "react";
 import FileGrid from "./FileGrid";
 import { useFileManager } from "../hooks/useFileManager";
+import classNames from "classnames";
 
 function FileInput() {
-  const { files, handleFileChange, handleFileDelete, inputRef } =
+  const { files, handleFileChange, handleFileDelete, inputRef, stored } =
     useFileManager();
   return (
-    <div className={files.size === 0 && "hidden"}>
+    <div
+      className={classNames("", files?.length === 0 || (!files && "hidden"))}
+    >
       <input
         ref={inputRef}
         onChange={handleFileChange}
@@ -17,10 +20,7 @@ function FileInput() {
         multiple
       />
 
-      <FileGrid
-        handleDelete={handleFileDelete}
-        files={Array.from(files).map(([name, file]) => file)}
-      />
+      <FileGrid handleDelete={handleFileDelete} files={files} stored={stored} />
     </div>
   );
 }
