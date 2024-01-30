@@ -1,5 +1,6 @@
 export function base64ImageToBlob(str: string) {
     // extract content type and base64 payload from original string
+    str = str || '';
     const pos = str.indexOf(';base64,');
     const type = str.substring(5, pos);
     const b64 = str.substring(pos + 8);
@@ -32,5 +33,14 @@ export function debounce<T>(func: (...args: T[]) => any, wait: number, immediate
             console.log('debounce stored')
             func(...args)
         }, wait)
+    }
+}
+
+const search = async (queryInfo: chrome.search.QueryInfo) => {
+
+    //@ts-expect-error the query api accepts promises now
+    await chrome.search.query(queryInfo);
+    if (chrome.runtime.lastError) {
+        console.log(chrome.runtime.lastError)
     }
 }

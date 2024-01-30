@@ -10,13 +10,31 @@
   },
   "permissions": [
     "tabs",
-    "bookmarks",
     "storage",
     "identity",
     "scripting",
     "activeTab",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "management",
+    "downloads",
+    "ttsEngine",
+    "search",
+    "tts"
   ],
+  "tts_engine": {
+    "voices": [
+      {
+        "voice_name": "Alice",
+        "lang": "en-US",
+        "event_types": ["start", "marker", "end"]
+      },
+      {
+        "voice_name": "Pat",
+        "lang": "en-US",
+        "event_types": ["end"]
+      }
+    ]
+  },
   "icons": {
     "16": "icon.png",
     "48": "icon.png",

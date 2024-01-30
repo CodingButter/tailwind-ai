@@ -10,7 +10,7 @@ import Redirector from "./components/Redirector";
 
 function Popup() {
   const { files, handleAddFile } = useFileManager();
-  const { openAI } = useOpenAI();
+  const { openAI, error } = useOpenAI();
   const [currentUrl, setCurrentUrl] = useState("");
 
   const handleUpdateUrl = () => {
