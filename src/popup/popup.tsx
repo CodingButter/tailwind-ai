@@ -10,7 +10,7 @@ import Redirector from "./components/Redirector";
 
 function Popup() {
   const { files, handleAddFile } = useFileManager();
-  const { openAI, error } = useOpenAI();
+  const { openAI, options, error } = useOpenAI();
   const [currentUrl, setCurrentUrl] = useState("");
 
   const handleUpdateUrl = () => {
@@ -31,7 +31,7 @@ function Popup() {
       className="overflow-y-auto flex flex-col gap-2 w-full h-full py-3 bg-gradient-to-t from-gray-800 to-gray-900 via-transparent"
       style={{ width: "400px", height: "600px" }}
     >
-      {!openAI ? (
+      {!openAI && !options.openAIKey ? (
         <div className="flex flex-col justify-center items-center gap-2 w-full h-full p-8">
           <h1 className="text-white text-2xl font-bold">
             Configure Tailwind AI

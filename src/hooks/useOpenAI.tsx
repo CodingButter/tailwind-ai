@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 import OpenAI from "openai";
 import useChromeStorage from "./useChromeStorage";
 import { ErrorMessage, ErrorLevel, ErrorType } from "../types";
+import actions from "../utils/actions/execute";
+import AIToolsArray from "../utils/actions/AITools";
 
 export type Options = {
   openAIKey: string;

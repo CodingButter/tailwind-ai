@@ -36,11 +36,18 @@ export function debounce<T>(func: (...args: T[]) => any, wait: number, immediate
     }
 }
 
-const search = async (queryInfo: chrome.search.QueryInfo) => {
-
-    //@ts-expect-error the query api accepts promises now
-    await chrome.search.query(queryInfo);
-    if (chrome.runtime.lastError) {
-        console.log(chrome.runtime.lastError)
-    }
+export const getScreenShot = async (filename: string): Promise<File> => {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.captureVisibleTab(null, {}, function (image) {
+            // You can add that image HTML5 canvas, or Element.
+            try {
+                const file = new File([base64ImageToBlob(image)], `${filename.replace(/[^a-zA-Z0-9]/g, '_').replace(/*replace extension*/ /\.[^/.]+$/, "")}.png`, {
+                    type: "image/jpeg",
+                });
+                resolve(file)
+            } catch (e) {
+                reject(e)
+            }
+        })
+    })
 }

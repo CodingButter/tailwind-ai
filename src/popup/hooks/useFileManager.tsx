@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from "react";
 import useStoredFileArray from "./useStoreFileArray";
-import { base64ImageToBlob } from "../../utils";
+import { getScreenShot } from "../../utils";
 
 type FileArray = File[];
 
@@ -80,13 +80,7 @@ export const FileManagerProvider = ({
   };
 
   useEffect(() => {
-    chrome.tabs.captureVisibleTab(null, {}, function (image) {
-      // You can add that image HTML5 canvas, or Element.
-      const file = new File([base64ImageToBlob(image)], "screenshot.png", {
-        type: "image/jpeg",
-      });
-      setScreenshot(file);
-    });
+    getScreenShot("screenshot").then(setScreenshot);
   }, []);
 
   return (
