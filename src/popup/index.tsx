@@ -2,7 +2,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "../assets/tailwind.css";
 import Popup from "./popup";
-import "./prototypes";
 import { FileManagerProvider } from "./hooks/useFileManager";
 import { OpenAIProvider } from "../hooks/useOpenAI";
 

@@ -1,70 +1,58 @@
 import { useState, useEffect } from 'react';
+import { MyFile, FileJSON } from "../../types"
 
-function useStoredFileArray(key: string): [File[], (files: File[]) => Promise<void>, (file: string) => Promise<void>, string[]] {
-    const [files, setFiles] = useState<File[]>([]);
-    const [stored, setStored] = useState<string[]>([]);
+function useStoredFileArray(key: string): [MyFile[], (files: MyFile[]) => Promise<void>, (file: string) => Promise<void>] {
+    const [files, setFiles] = useState<MyFile[]>([]);
+    const [storedFiles, setStoredFiles] = useState<string[]>([]);
     // Load files from chrome.storage.local
+
     useEffect(() => {
-        chrome.storage.local.get([key], async (result) => {
-            if (result[key]) {
-                const storedFileNames = result[key];
-                setStored(storedFileNames);
-                const loadedFiles = await Promise.all(
-                    storedFileNames.map(async (fileName) => {
+        chrome.storage.sync.get([key]).then((storedFiles: string[] = []) => {
+            storedFiles = storedFiles[key] || storedFiles;
 
-                        const file = await new Promise<string>((resolve) => {
-                            chrome.storage.local.get([fileName], async (data) => {
-                                if (!data[fileName]) return resolve(null)
-                                //@ts-expect-error we added this method to the File class
-                                const file = await File.fromJSON(data[fileName])
-                                resolve(file);
-                            });
-                        });
-                        await new Promise((resolve) => setTimeout(resolve, 500));
+            storedFiles.length > 0 &&
+                chrome.storage.local.get([...storedFiles]).then(async (_files: FileJSON[]) => {
 
-                        return file;
-                    })
-                );
-                setFiles(loadedFiles);
+                    const newFiles = await Promise.all(Object.keys(_files).map(async (_key) => {
+                        const obj = _files[_key];
+                        const newFile = await MyFile.fromJSON(obj);
+                        newFile.stored = true;
+                        return newFile;
+                    }))
+                    console.log(newFiles)
+                    setFiles(newFiles)
+                }).catch((e) => console.error({ from: "files", error: e }))
+        }).catch((e) => console.log({ from: "file names", error: e }))
+    }, [key])
 
-
-            }
-        });
-    }, [key]);
+    useEffect(() => {
+        setStoredFiles(files.map((file) => file.name))
+    }, [files])
 
     // Update chrome.storage.local when files change
-    const storeFiles = async (newFiles: File[]) => {
-        setFiles(newFiles);
-        newFiles = newFiles.filter((file) => {
-            if (file.name == "screenshot.png") {
-                setStored((stored) => [...stored, file.name]);
-                return false;
-            } else {
-                return true;
-            }
-        });
-
+    const storeFiles = async (newFiles: MyFile[]) => {
+        console.log({ newFiles })
+        setFiles(newFiles.map((file) => { file.stored = false; return file }))
+        newFiles = newFiles.filter((file) => file && !file.ignore);
+        await chrome.storage.sync.set({ [key]: newFiles.map((files) => files.name) })
         for (const file of newFiles) {
-
-            //@ts-expect-error we added this method to the File class
-            const fileString = await file.toJSON();
-            chrome.storage.local.set({ [file.name]: fileString });
-            setStored((stored) => [...stored, file.name]);
-            await new Promise((resolve) => setTimeout(resolve, 500));
-
+            const jsonFile = await file.toJSON();
+            await chrome.storage.local.set({ [file.name]: jsonFile })
+            file.stored = true;
+            setFiles([...files, file])
         }
-        chrome.storage.local.set({ [key]: newFiles.map((file) => file.name) });
-
     };
 
     const handleRemove = async (fileName: string) => {
-        chrome.storage.local.remove([fileName]);
-        setStored((stored) => stored.filter((name) => name !== fileName));
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setFiles((files) => files.filter((file) => file.name !== fileName));
+        if (fileName) {
+            await chrome.storage.local.remove([fileName]);
+            const remainingFiles = files.filter((file) => file && file?.name !== fileName) as MyFile[];
+            await chrome.storage.sync.set({ [key]: remainingFiles.map((file) => file.name) });
+            setFiles(remainingFiles);
+        }
     }
 
-    return [files, storeFiles, handleRemove, stored];
+    return [files, storeFiles, handleRemove];
 }
 
 export default useStoredFileArray;

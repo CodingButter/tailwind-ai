@@ -13,16 +13,17 @@ import {
   faFilePowerpoint,
   faFileArchive,
 } from "@fortawesome/free-solid-svg-icons";
+import { MyFile } from "../../types";
 
 interface FileIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  file: File;
+  file: MyFile;
 }
 
 const FileIcon: React.FC<FileIconProps> = (props: FileIconProps) => {
   const file = props?.file;
   const iconSize = "sm";
   // Function to determine if file is an image
-  const isImage = (file: File): boolean => file?.type?.startsWith("image/");
+  const isImage = (file: MyFile): boolean => file?.type?.startsWith("image/");
 
   // Function to get FontAwesome icon for file type
   const getFileIcon = (fileType: string): JSX.Element => {

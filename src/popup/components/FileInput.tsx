@@ -4,7 +4,7 @@ import { useFileManager } from "../hooks/useFileManager";
 import classNames from "classnames";
 
 function FileInput() {
-  const { files, handleFileChange, handleFileDelete, inputRef, stored } =
+  const { files, handleFileChange, handleFileDelete, inputRef } =
     useFileManager();
   return (
     <div
@@ -20,7 +20,7 @@ function FileInput() {
         multiple
       />
 
-      <FileGrid handleDelete={handleFileDelete} files={files} stored={stored} />
+      <FileGrid handleDelete={handleFileDelete} files={files} />
     </div>
   );
 }

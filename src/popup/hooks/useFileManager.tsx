@@ -7,27 +7,24 @@ import React, {
   useEffect,
 } from "react";
 import useStoredFileArray from "./useStoreFileArray";
-import { getScreenShot } from "../../utils";
-
-type FileArray = File[];
+import { getScreenShot, throttle } from "../../utils";
+import { MyFile } from "../../types";
 
 interface FileManagerContextProps {
-  files: FileArray;
+  files: MyFile[];
   handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleFileDelete: (fileName: string) => void;
-  handleAddFile: (file: File, override: boolean, index?: number) => void;
-  stored: string[];
-  setFiles: (files: FileArray) => void;
+  handleAddFile: (file: MyFile, override: boolean, index?: number) => void;
+  setFiles: (files: MyFile[]) => void;
   inputRef: React.RefObject<HTMLInputElement>;
 }
 
 const FileManagerContext = createContext<FileManagerContextProps>({
   files: [],
-  stored: [],
-  setFiles: (files: FileArray) => {},
+  setFiles: (files: MyFile[]) => {},
   handleFileChange: (event: ChangeEvent) => {},
   handleFileDelete: (fileName: string) => {},
-  handleAddFile: (file: File, override: boolean, index?: number) => {},
+  handleAddFile: (file: MyFile, override: boolean, index?: number) => {},
   inputRef: { current: null },
 });
 
@@ -36,31 +33,31 @@ export const useFileManager = () => useContext(FileManagerContext);
 export const FileManagerProvider = ({
   children,
 }: React.PropsWithChildren<unknown>) => {
-  const [files, setFiles, handleDelete, stored] = useStoredFileArray("files");
-  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [files, setFiles, handleDelete] = useStoredFileArray("files");
+  const [screenshot, setScreenshot] = useState<MyFile | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       if (files) {
-        Array.from(event.target.files).forEach((file) => {
-          if (files.some(({ name }) => name === file.name)) {
-            return;
+        const newFiles: MyFile[] = [];
+        for (const file of Array.from(event.target.files)) {
+          const myFile = await MyFile.fromFile(file);
+          if (myFile) {
+            newFiles.push(myFile);
           }
-          files.push(file);
-        });
+        }
+        setFiles(newFiles);
       }
-      setFiles([...(files || [])]);
     }
   };
 
-  const handleAddFile = (
-    file: File,
+  const handleAddFile = async (
+    file: MyFile,
     override: boolean = false,
     index?: number
-  ): void => {
-    if (files && files.some(({ name }) => name === file.name)) {
-      //if override then splice the new file in place of the old one
+  ): Promise<void> => {
+    if (files && files.some(async ({ name }) => name === file.name)) {
       if (override) {
         index = files.findIndex(({ name }) => name === file.name);
         files.splice(index, 1, file);
@@ -68,11 +65,11 @@ export const FileManagerProvider = ({
         return;
       }
     } else if (index) {
-      files.splice(index, 1, file);
+      files.splice(index, 1, file as MyFile);
     } else {
       files.push(file);
     }
-    setFiles([...(files || [])]);
+    await setFiles([...files]);
   };
 
   const handleFileDelete = (fileName: string): void => {
@@ -86,8 +83,7 @@ export const FileManagerProvider = ({
   return (
     <FileManagerContext.Provider
       value={{
-        files: [screenshot, ...files] as FileArray,
-        stored: ["screenshot.png", ...stored],
+        files: [screenshot, ...files] as MyFile[],
         setFiles,
         handleFileChange,
         handleFileDelete,

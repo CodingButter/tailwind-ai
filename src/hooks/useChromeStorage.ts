@@ -6,7 +6,8 @@ import { debounce } from '../utils';
 // It will also update chrome.storage.sync when the value changes
 const useChromeStorage = <T>(key: string, defaultValue: T): [T, (value: T) => void] => {
     const [value, setValue] = useState<T>(defaultValue);
-    const setDebounceValue = debounce((value: T) => {
+
+    const setDebounceValue = debounce<T>((value: T) => {
         chrome.storage.sync.set({ [key]: value });
     }, 500)
 
@@ -20,16 +21,23 @@ const useChromeStorage = <T>(key: string, defaultValue: T): [T, (value: T) => vo
     }, [key]);
 
     // Update chrome.storage.sync when value changes
+    const handleSetValue = async function (val: (T | (() => T) | Promise<T>)): Promise<void> {
 
+        if (typeof val === "function") {
+            val = (await (val as () => T)()) as T;
+        }
+        setValue(val as T);
+        setDebounceValue(val as T);
+    }
 
 
     useEffect(() => {
-        setDebounceValue(value)
+        setDebounceValue(value as T)
     }, [key, value]);
 
 
 
-    return [value, setValue];
+    return [value, handleSetValue];
 }
 
 export default useChromeStorage;

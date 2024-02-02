@@ -1,25 +1,10 @@
 import React, { ChangeEvent, useEffect } from "react";
 import { useOpenAI, type Options } from "../../hooks/useOpenAI";
-import useChromeStorage from "../../hooks/useChromeStorage";
 import PromptTextArea from "../../components/PromptTextArea";
 import AITemperatureSlider from "../../components/AITemperatureSlider";
 
 function Accordion() {
-  const { options } = useOpenAI();
-  const [runningPrompt, setRunningPrompt] = useChromeStorage(
-    "runningPrompt",
-    options.prompt
-  );
-
-  const [runningTemp, setRunningTemp] = useChromeStorage(
-    "runningTemp",
-    options.temperature
-  );
-
-  const handleSetRunningoptions = (newoptions: Partial<Options>) => {
-    setRunningPrompt(newoptions.prompt);
-    setRunningTemp(newoptions.temperature);
-  };
+  const { options, runningOptions, setRunningOptions } = useOpenAI();
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -32,12 +17,12 @@ function Accordion() {
 
       <div className="surface accordion-content mb-2 flex flex-col gap-1 text-sm text-gray-200">
         <PromptTextArea
-          options={{ prompt: runningPrompt }}
-          setOptions={handleSetRunningoptions}
+          options={runningOptions}
+          setOptions={setRunningOptions}
         />
         <AITemperatureSlider
-          options={{ temperature: runningTemp }}
-          setOptions={handleSetRunningoptions}
+          options={runningOptions}
+          setOptions={setRunningOptions}
         />
       </div>
     </div>

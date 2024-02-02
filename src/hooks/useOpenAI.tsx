@@ -2,8 +2,6 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 import OpenAI from "openai";
 import useChromeStorage from "./useChromeStorage";
 import { ErrorMessage, ErrorLevel, ErrorType } from "../types";
-import actions from "../utils/actions/execute";
-import AIToolsArray from "../utils/actions/AITools";
 
 export type Options = {
   openAIKey: string;
@@ -12,6 +10,9 @@ export type Options = {
   prompt: string;
   sendScreenshot: boolean;
   autoSave: boolean;
+  runningPrompt: string;
+  runningTemp: number;
+  defaultPrompt: string;
 };
 
 const defaultOptions: Options = {
@@ -21,12 +22,18 @@ const defaultOptions: Options = {
   prompt: "",
   sendScreenshot: true,
   autoSave: true,
+  runningPrompt: "",
+  runningTemp: 0.5,
+  defaultPrompt: "",
 };
 
 type OpenAIContextProps = {
   openAI: OpenAI;
   options: Options;
+  runningOptions: Options;
   setOptions: (options: Partial<Options>) => void;
+  setRunningOptions: (options: Partial<Options>) => void;
+  clearRunningOptions: () => void;
   error: ErrorMessage;
 };
 
@@ -40,9 +47,24 @@ export const OpenAIProvider = ({ children }) => {
     "options",
     defaultOptions
   );
+  const [runningOptions, setRunningOptions] = useChromeStorage<Options>(
+    "options",
+    defaultOptions
+  );
 
   const handleSetOptions = (updateOptions: Partial<Options>) => {
     setOptions({ ...options, ...updateOptions });
+  };
+
+  const handleSetRunningOptions = (updateOptions: Partial<Options>) => {
+    setRunningOptions({ ...runningOptions, ...updateOptions });
+  };
+
+  const clearRunningOptions = () => {
+    handleSetRunningOptions({
+      runningPrompt: "",
+      runningTemp: options.temperature,
+    });
   };
 
   const handleCreateOpenAI = () => {
@@ -82,6 +104,9 @@ export const OpenAIProvider = ({ children }) => {
         openAI,
         options,
         setOptions: handleSetOptions,
+        runningOptions,
+        setRunningOptions: handleSetRunningOptions,
+        clearRunningOptions,
       }}
     >
       {children}
